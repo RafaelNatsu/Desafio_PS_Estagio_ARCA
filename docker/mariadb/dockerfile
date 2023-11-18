@@ -1,3 +1,3 @@
 FROM mariadb
 
-ADD ./app/ci-estrutura-inicial-master/ ./docker-entrypoint-initdb.d
+ADD ./crudci_games_db.sql ./docker-entrypoint-initdb.d

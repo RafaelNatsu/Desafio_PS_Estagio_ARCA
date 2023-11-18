@@ -1,33 +1,37 @@
-# Copyright VMware, Inc.
-# SPDX-License-Identifier: APACHE-2.0
-
 version: '3.9'
 
 services:
-  # mariadb:
-  #   image: docker.io/bitnami/mariadb:11.1
-  #   environment:
-  #     # ALLOW_EMPTY_PASSWORD is recommended only for development.
-  #     - ALLOW_EMPTY_PASSWORD=yes
-  #     - MARIADB_USER=bn_myapp
-  #     - MARIADB_DATABASE=bitnami_myapp
-  myapp:
+  db:
+    container_name: database_mariadb
+    build:
+      context: ./docker/mariadb
+      dockerfile: dockerfile
+    restart: always
+    volumes:
+      - volumePersistent:/var/lib/mysql
+    env_file: # apenas para facilitar
+      - .env
+    networks:
+      - desafio_network
+
+  application:
+    container_name: crud
     build: 
       context: .
       dockerfile: docker/php/dockerfile
-    ports:
-      - '80:80'
-    # environment:
-    #   # ALLOW_EMPTY_PASSWORD is recommended only for development.
-    #   - ALLOW_EMPTY_PASSWORD=yes
-    #   - CODEIGNITER_DATABASE_HOST=mariadb
-    #   - CODEIGNITER_DATABASE_PORT_NUMBER=3306
-    #   - CODEIGNITER_DATABASE_USER=bn_myapp
-    #   - CODEIGNITER_DATABASE_NAME=bitnami_myapp
+    ports: # porta dinamica
+      - '$PORT_HTTP:80'
+    env_file:
+      - .env
     volumes:
       - ./app/:/var/www/html
-      # - type: bind
-      #   source: ./app/
-      #   target: /var/www/html
-    # depends_on:
-    #   - mariadb
+    depends_on:
+      - db
+    networks: 
+      - desafio_network
+
+networks:
+  desafio_network:
+
+volumes:
+  volumePersistent:

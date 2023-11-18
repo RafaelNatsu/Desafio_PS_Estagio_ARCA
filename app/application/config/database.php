@@ -73,12 +73,18 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
+# Set environment variables
+$is_docker_container = getenv('DOCKER_CONTAINER') !== false;
+$username_database = getenv('MARIADB_USER') ?: getenv('MARIADB_USER');
+$password_database = getenv('MARIADB_PASSWORD') ?: getenv('MARIADB_PASSWORD');
+$database_name =  getenv('MARIADB_DATABASE') ?: getenv('MARIADB_DATABASE');
+
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => '',
-	'password' => '',
-	'database' => '',
+	'hostname' => ($is_docker_container)?"db:3306":'localhost',
+	'username' => ($is_docker_container)?$username_database:'',
+	'password' => ($is_docker_container)?$password_database:'',
+	'database' => ($is_docker_container)?$database_name:'crudci_games_db',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
