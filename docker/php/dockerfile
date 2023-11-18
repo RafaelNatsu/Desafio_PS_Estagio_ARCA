@@ -1,0 +1,16 @@
+FROM php:8.2.12-apache
+
+COPY ./app /var/www/html/
+
+# Atualiza e instala dependencias do sitema
+RUN apt update && apt upgrade -y
+RUN apt install -y git unzip
+
+# Instala composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# Instala dependencias
+RUN composer install
+
+RUN a2enmod rewrite && /etc/init.d/apache2 restart
+
+RUN chown -R www-data:www-data /var/www/html/

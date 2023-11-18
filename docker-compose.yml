@@ -1,0 +1,33 @@
+# Copyright VMware, Inc.
+# SPDX-License-Identifier: APACHE-2.0
+
+version: '3.9'
+
+services:
+  # mariadb:
+  #   image: docker.io/bitnami/mariadb:11.1
+  #   environment:
+  #     # ALLOW_EMPTY_PASSWORD is recommended only for development.
+  #     - ALLOW_EMPTY_PASSWORD=yes
+  #     - MARIADB_USER=bn_myapp
+  #     - MARIADB_DATABASE=bitnami_myapp
+  myapp:
+    build: 
+      context: .
+      dockerfile: docker/php/dockerfile
+    ports:
+      - '80:80'
+    # environment:
+    #   # ALLOW_EMPTY_PASSWORD is recommended only for development.
+    #   - ALLOW_EMPTY_PASSWORD=yes
+    #   - CODEIGNITER_DATABASE_HOST=mariadb
+    #   - CODEIGNITER_DATABASE_PORT_NUMBER=3306
+    #   - CODEIGNITER_DATABASE_USER=bn_myapp
+    #   - CODEIGNITER_DATABASE_NAME=bitnami_myapp
+    volumes:
+      - ./app/:/var/www/html
+      # - type: bind
+      #   source: ./app/
+      #   target: /var/www/html
+    # depends_on:
+    #   - mariadb
